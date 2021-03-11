@@ -1,7 +1,6 @@
 Instructions for building on Windows.
 
-Fuller instructions that include
-   * Installing CMake 
+Fuller instructions that include 
    * Portable Settings
    * Building an Installer
 can be found on our wiki at http://wiki.audacityteam.org/wiki/Building_On_Windows
@@ -9,7 +8,7 @@ can be found on our wiki at http://wiki.audacityteam.org/wiki/Building_On_Window
 
 1. MSVC 2019: Download and install Microsoft Visual Studio 2019
 
- https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16
+ https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio?view=vs-2019
 
 2. Git: Download and install Git, for example by installing:
 
@@ -52,15 +51,32 @@ can be found on our wiki at http://wiki.audacityteam.org/wiki/Building_On_Window
     Choose 'Edit the system environment variables'
     Then the 'Environment Variables' button 
     Then in system variables, for variable and value,  add (for example)     
-        WXWIN         C:\wxWidgets-3.1.3
+        WXWIN         C:\wxWidgets
 
     You will be building a dll version with MSVC2019 IDE, so...
 
-    In MSVC 2019 open wx_vc15.sln, and select dll, release.
+    In MSVC 2019 open wx_vc16.sln present in %WXWIN%\wxWidgets\build\msw, and select dll, release.
     Then build.
+	(If you are using the lower version of MSVC, then choose the file wx_vcN.sln file, where
+	 N=7, 8, 9, 10, 11, 12, 14, 15 and 16 (for the versions MSVS 2003, 2005, 2008, 2010, 2012, 2013, 
+	2015, 2017 and 2019 respectively) ).
 
   3) Having got this far, it is well worth trying out building some wxWidgets
-    examples to confirm that building has worked OK
+    examples to confirm that building has worked OK.
+
+    If you do decide to do this, 
+
+    $ copy  %WXWIN%\include\msvc\wx\setup.h %WXWIN%\include\wx\
+
+    This means that the examples will see setup.h, which they need.
+
+    To run the samples, if you don't put the dll libs on your path, you'll 
+    need to copy the .exe file to the directory where the .dll files are 
+    ( %WXWIN%\lib\vcc_dll\ ).
+
+    Alternatively there is a 'working directory' setting in 
+    properties->configuration-properties->debugging,  
+    and you can set that to the dll release or debug directory.
 
 5. Audacity
 
@@ -74,35 +90,15 @@ can be found on our wiki at http://wiki.audacityteam.org/wiki/Building_On_Window
 
     Audacity itself does not use/need git submodules.
 
-  2) Open the CMake GUI
-    - Open VS 2019 > "continue without code" > File > Open > CMake
-    - Pick CMakeLists.txt in root of audacity source folder you cloned
-    - Click "Open the CMake Settings Editor"
-
-  4) Check "Show advanced variables", click "Show advanced settings"
-  5) Set CMake Settings:
-    - configuration type > Release
-    - toolset > msvc_x86_x86 or msvc_x86_x64
-    - CMake generator > VS 16 2019
-
-  6) Set CMake variables:
-    - wxWidgets_LIB_DIR > 'C:/wxWidgets/lib/vc_dll' (your path may be slightly different)
-    - CMAKE_BINARY_DIR > `${projectDir}\out\install\${name}` (default, you can change it)
-
-  7) Save (should automatically generate CMake file)
-    - if it doesn't, Project > Generate CMake Cache
-
-  8) Build > Build All
-
-    Check the output directory indicated in step 6 to find `Audacity.exe`
-    
-
- Old VS 2017 instructions: 
 
  2) Open the CMake GUI.
+     Set the 'Where is the source code' location to where your copy of the Audacity git repo is.
+     Set the 'Where to build the binaries' to where you want the results 
+     (For 'Where to build the binaries' prefer a location that is not under git version control. You can make a new directory for it).
 
-     Set the 'Where is the source code' location to where your copy of the git repo is.
-     Set the 'Where to build the binaries' to where you want the results.
+    Click on configure.
+    (notice where it found / did not find wxWidgets if it did not find wxwidgets check 
+    that you set WXWIN correctly )
 
  3) Click on Generate.
 
